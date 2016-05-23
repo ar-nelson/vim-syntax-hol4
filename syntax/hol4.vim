@@ -47,7 +47,7 @@ syn cluster  smlAENoParen contains=smlBraceErr,smlBrackErr,smlCommentErr,smlEndE
 
 syn cluster  smlContained contains=smlTodo,smlPreDef,smlModParam,smlModParam1,smlPreMPRestr,smlMPRestr,smlMPRestr1,smlMPRestr2,smlMPRestr3,smlModRHS,smlFuncWith,smlFuncStruct,smlModTypeRestr,smlModTRWith,smlWith,smlWithRest,smlModType,smlFullMod,smlRecordField,holEncl,holRecordField,holRecordErr,holOperator,holQuantifier,holQuantifierVar,holDelim,holCase,holKeyword,holDatatype,holDatatypeEq
 
-syn cluster  holSyntax contains=smlCommentErr,smlComment,smlNumber,smlReal,holEncl,holOperator,holQuantifier,holDelim,holKeyword
+syn cluster  holSyntax contains=smlCommentErr,smlComment,smlNumber,smlReal,smlString,holEncl,holOperator,holQuantifier,holDelim,holKeyword
 
 " Enclosing delimiters
 syn region   smlEncl transparent matchgroup=smlKeyword start="(" matchgroup=smlKeyword end=")" contains=ALLBUT,@smlContained,smlParenErr
@@ -186,7 +186,7 @@ syn match    holOperator #/\\# contained
 
 syn region   holBlock matchgroup=holQuote start="`" matchgroup=holQuote end="`" contains=@holSyntax,holDoubleQuoteErr
 syn region   holExpr matchgroup=holQuote start="``" matchgroup=holQuote end="``" contains=@holSyntax,holSingleQuoteErr
-syn region   holType matchgroup=holQuote start="``:" matchgroup=holQuote end="``" contains=smlComment,smlCommentErr,holSingleQuoteErr,holOperator
+syn region   holType matchgroup=holQuote start="``:" matchgroup=holQuote end="``" concealends contains=smlComment,smlCommentErr,holSingleQuoteErr,holOperator
 
 syn keyword  smlHolDatatype Datatype skipwhite skipempty nextgroup=holDatatype
 syn region   holDatatype matchgroup=holQuote start="`" matchgroup=holQuote end="`" contains=@holSyntax,holDatatypeEq,holDoubleQuoteErr contained
@@ -262,21 +262,21 @@ if version >= 508 || !exists("did_sml_syntax_inits")
 
   HiLink smlHolDatatype  Special
 
-  HiLink holExpr         String
-  HiLink holBlock        String
+  HiLink holExpr         Identifier
+  HiLink holBlock        Identifier
   HiLink holDatatype     Type
   HiLink holType         Type
-  HiLink holQuote        Delimiter
+  HiLink holQuote        Special
   HiLink holDatatypeEq   Delimiter
 
-  HiLink holKeyword      Keyword
+  HiLink holKeyword      Preproc
   HiLink holEncl         Delimiter
   HiLink holDelim        Delimiter
   HiLink holRecordField  Identifier
   HiLink holCase         Constant
   HiLink holOperator     Operator
-  HiLink holQuantifier   Keyword
-  HiLink holQuantifierVar Identifier
+  HiLink holQuantifier   Preproc
+  HiLink holQuantifierVar Function
 
   HiLink holSingleQuoteErr Error
   HiLink holDoubleQuoteErr Error
