@@ -167,9 +167,8 @@ syn match    smlRecordField   "\<\w\+\>\(\s*[=:]\)\@=" contained
 " HOL stuff
 
 syn keyword  holKeyword case of if then else let in do od with updated_by and _ contained
-syn keyword  holOperator IN LEX UNION RUNION INTER RINTER SUBSET RSUBSET DIV MOD EXP O o contained
+syn keyword  holOperator IN LEX UNION INTER DIFF SUBSET PSUBSET INSERT DELETE RSUBSET RUNION RINTER DIV MOD EXP O o contained
 syn match    holOperator /\(\(\i\|[α-ω]\|\s\|['"`()\[\]{}]\)\@!.\)\+/ contained
-syn match    holOperator /\(^\|\i\|[α-ω]\|\s\|['")\]}]\)\@<=#\($\|\i\|[α-ω]\|\s\|['"(\[{]\)\@=/ contained conceal cchar=×
 syn match    holDelim /\(^\|\i\|[α-ω]\|\s\|['"`()\[\]{}]\)\@<=\(\.\|;\|:\|=>\|<-\)\($\|\i\|[α-ω]\|\s\|['"`()\[\]{}]\)\@=/ contained
 syn match    holDelim /\(^\|\i\|[α-ω]\|\s\|=\)\@<=|\($\|\i\|[α-ω]\|\s\|=\)\@=/ contained skipwhite skipempty nextgroup=holCase
 
@@ -183,10 +182,9 @@ syn match    holQuantifierVar /\(\i\|\I\|[α-ω]\|[_']\)\+/ skipwhite skipempty 
 syn match    holOperator #\\/# contained
 syn match    holOperator #/\\# contained
 
-
 syn region   holBlock matchgroup=holQuote start="`" matchgroup=holQuote end="`" contains=@holSyntax,holDoubleQuoteErr
 syn region   holExpr matchgroup=holQuote start="``" matchgroup=holQuote end="``" contains=@holSyntax,holSingleQuoteErr
-syn region   holType matchgroup=holQuote start="``:" matchgroup=holQuote end="``" concealends contains=smlComment,smlCommentErr,holSingleQuoteErr,holOperator
+syn region   holType matchgroup=holQuote start="``:" matchgroup=holQuote end="``" contains=smlComment,smlCommentErr,holSingleQuoteErr,holOperator
 
 syn keyword  smlHolDatatype Datatype skipwhite skipempty nextgroup=holDatatype
 syn region   holDatatype matchgroup=holQuote start="`" matchgroup=holQuote end="`" contains=@holSyntax,holDatatypeEq,holDoubleQuoteErr contained
@@ -202,6 +200,35 @@ syn sync match smlStructSync  grouphere  smlStruct  "\<struct\>"
 syn sync match smlStructSync  groupthere smlStruct  "\<end\>"
 syn sync match smlSigSync     grouphere  smlSig     "\<sig\>"
 syn sync match smlSigSync     groupthere smlSig     "\<end\>"
+
+" Conceals
+if exists("g:hol4_conceal_enabled")
+  syn match  holOperator /\(^\|\i\|[α-ω]\|\s\|['")\]}]\)\@<=#\($\|\i\|[α-ω]\|\s\|['"(\[{]\)\@=/ contained conceal cchar=×
+  syn match  holOperator /\(^\|\i\|[α-ω]\|\s\|['")\]}]\)\@<=->\($\|\i\|[α-ω]\|\s\|['"(\[{]\)\@=/ contained conceal cchar=➜
+  syn match  holOperator /\(^\|\i\|[α-ω]\|\s\|['")\]}]\)\@<=|->\($\|\i\|[α-ω]\|\s\|['"(\[{]\)\@=/ contained conceal cchar=↦
+  syn match  holOperator /\(^\|\i\|[α-ω]\|\s\|['")\]}]\)\@<=++\($\|\i\|[α-ω]\|\s\|['"(\[{]\)\@=/ contained conceal cchar=⧺
+  syn match  holOperator /\(^\|\i\|[α-ω]\|\s\|['")\]}]\)\@<=::\($\|\i\|[α-ω]\|\s\|['"(\[{]\)\@=/ contained conceal cchar=∷
+  syn match  holOperator /\(^\|\i\|[α-ω]\|\s\|['")\]}]\)\@<=:=\($\|\i\|[α-ω]\|\s\|['"(\[{]\)\@=/ contained conceal cchar=≔
+  syn match  holDelim /{\s*}/ contained conceal cchar=∅
+  syn region holType matchgroup=holQuote start="``:" matchgroup=holQuote end="``" concealends contains=smlComment,smlCommentErr,holSingleQuoteErr,holOperator
+
+  if exists("g:hol4_conceal_ascii_operators")
+    syn keyword holOperator UNION contained conceal cchar=∪
+    syn keyword holOperator INTER contained conceal cchar=∩
+    syn keyword holOperator SUBSET contained conceal cchar=⊆
+    syn keyword holOperator PSUBSET contained conceal cchar=⊂
+    syn keyword holOperator RSUBSET contained conceal cchar=⊑
+    syn keyword holOperator DIV contained conceal cchar=÷
+    syn keyword holOperator O o contained conceal cchar=∘
+    syn match   holOperator #\\/# contained conceal cchar=∨
+    syn match   holOperator #/\\# contained conceal cchar=∧
+    syn match   holOperator /\(^\|\i\|[α-ω]\|\s\|['")\]}]\)\@<===>\($\|\i\|[α-ω]\|\s\|['"(\[{]\)\@=/ contained conceal cchar=⇒
+    syn match   holOperator /\(^\|\i\|[α-ω]\|\s\|['")\]}]\)\@<=<=>\($\|\i\|[α-ω]\|\s\|['"(\[{]\)\@=/ contained conceal cchar=⇔
+  endif
+
+  highlight! link Conceal Operator
+  setlocal conceallevel=2
+endif
 
 " Define the default highlighting.
 " For version 5.7 and earlier: only when not done already
@@ -284,9 +311,6 @@ if version >= 508 || !exists("did_sml_syntax_inits")
   delcommand HiLink
 endif
 
-highlight! link Conceal Operator
-setlocal conceallevel=2
-
-let b:current_syntax = "hol"
+let b:current_syntax = "hol4"
 
 " vim: ts=8
