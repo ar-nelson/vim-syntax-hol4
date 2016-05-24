@@ -168,16 +168,16 @@ syn match    smlRecordField   "\<\w\+\>\(\s*[=:]\)\@=" contained
 
 syn keyword  holKeyword case of if then else let in do od with updated_by and _ contained
 syn keyword  holOperator IN LEX UNION INTER DIFF SUBSET PSUBSET INSERT DELETE RSUBSET RUNION RINTER DIV MOD EXP O o contained
-syn match    holOperator /\(\(\i\|[α-ω]\|\s\|['"`()\[\]{}]\)\@!.\)\+/ contained
-syn match    holDelim /\(^\|\i\|[α-ω]\|\s\|['"`()\[\]{}]\)\@<=\(\.\|;\|:\|=>\|<-\)\($\|\i\|[α-ω]\|\s\|['"`()\[\]{}]\)\@=/ contained
-syn match    holDelim /\(^\|\i\|[α-ω]\|\s\|=\)\@<=|\($\|\i\|[α-ω]\|\s\|=\)\@=/ contained skipwhite skipempty nextgroup=holCase
+syn match    holOperator /\v((\w|\s|[α-ω'"`()\[\]{}])@!.)+/ contained
+syn match    holDelim /\v(^|\w|\s|[α-ω'"`()\[\]{}])@<=([.;:]|\=\>|\<\-)($|\w|\s|[α-ω'"`()\[\]{}])@=/ contained
+syn match    holDelim /\v(^|\w|\s|[α-ω=])@<=\|($|\w|\s|[α-ω=])@=/ contained skipwhite skipempty nextgroup=holCase
 
 syn region   holEncl transparent matchgroup=holDelim start="<|" matchgroup=holDelim end="|>" contained contains=@holSyntax,holRecordField,smlParenErr,smlBraceErr,smlBrackErr,holSingleQuoteErr,holDoubleQuoteErr
 syn match    holRecordField /\<\(\l\|_\)\(\w\|'\)*\>\(\s*:=\?\)\@=/ contained
-syn match    holCase /\(\i\|\I\|[α-ω]\|[_']\)\+/ skipwhite contained
+syn match    holCase /\v(\w|[α-ω'])+/ skipwhite contained
 
-syn region   holQuantifier matchgroup=holQuantifier start="∀\|∃\|λ\|?\|!\|?!\|@\|LEAST\|\\" matchgroup=holDelim end="\s*\." contained transparent contains=holQuantifierVar,holEncl,holDelimiter,holOperator,smlComment
-syn match    holQuantifierVar /\(\i\|\I\|[α-ω]\|[_']\)\+/ skipwhite skipempty contained
+syn region   holQuantifier matchgroup=holQuantifier start="[∀∃λ?!@\\]\|?!\|LEAST" matchgroup=holDelim end="\s*\." contained transparent contains=holQuantifierVar,holEncl,holDelimiter,holOperator,smlComment
+syn match    holQuantifierVar /\v(\w|[α-ω'])+/ skipwhite skipempty contained
 
 syn match    holOperator #\\/# contained
 syn match    holOperator #/\\# contained
@@ -188,7 +188,7 @@ syn region   holType matchgroup=holQuote start="``:" matchgroup=holQuote end="``
 
 syn keyword  smlHolDatatype Datatype skipwhite skipempty nextgroup=holDatatype
 syn region   holDatatype matchgroup=holQuote start="`" matchgroup=holQuote end="`" contains=@holSyntax,holDatatypeEq,holDoubleQuoteErr contained
-syn match    holDatatypeEq /\(^\|\i\|[α-ω]\|\s\)\@<=[=]\($\|\i\|[α-ω]\|\s\||\)\@=/ contained skipwhite skipempty nextgroup=holDelim,holCase
+syn match    holDatatypeEq /\v(^|\w|\s|[α-ω'])@<=\=($|\w|\s|[α-ω'|])@=/ contained skipwhite skipempty nextgroup=holDelim,holCase
 
 " Synchronization
 syn sync minlines=20
@@ -203,12 +203,12 @@ syn sync match smlSigSync     groupthere smlSig     "\<end\>"
 
 " Conceals
 if exists("g:hol4_conceal_enabled")
-  syn match  holOperator /\(^\|\i\|[α-ω]\|\s\|['")\]}]\)\@<=#\($\|\i\|[α-ω]\|\s\|['"(\[{]\)\@=/ contained conceal cchar=×
-  syn match  holOperator /\(^\|\i\|[α-ω]\|\s\|['")\]}]\)\@<=->\($\|\i\|[α-ω]\|\s\|['"(\[{]\)\@=/ contained conceal cchar=➜
-  syn match  holOperator /\(^\|\i\|[α-ω]\|\s\|['")\]}]\)\@<=|->\($\|\i\|[α-ω]\|\s\|['"(\[{]\)\@=/ contained conceal cchar=↦
-  syn match  holOperator /\(^\|\i\|[α-ω]\|\s\|['")\]}]\)\@<=++\($\|\i\|[α-ω]\|\s\|['"(\[{]\)\@=/ contained conceal cchar=⧺
-  syn match  holOperator /\(^\|\i\|[α-ω]\|\s\|['")\]}]\)\@<=::\($\|\i\|[α-ω]\|\s\|['"(\[{]\)\@=/ contained conceal cchar=∷
-  syn match  holOperator /\(^\|\i\|[α-ω]\|\s\|['")\]}]\)\@<=:=\($\|\i\|[α-ω]\|\s\|['"(\[{]\)\@=/ contained conceal cchar=≔
+  syn match  holOperator /\v(^|\w|\s|[α-ω'"`()\[\]{}])@<=\#($|\w|\s|[α-ω'"`()\[\]{}])@=/ contained conceal cchar=×
+  syn match  holOperator /\v(^|\w|\s|[α-ω'"`()\[\]{}])@<=\-\>($|\w|\s|[α-ω'"`()\[\]{}])@=/ contained conceal cchar=➜
+  syn match  holOperator /\v(^|\w|\s|[α-ω'"`()\[\]{}])@<=\|\-\>($|\w|\s|[α-ω'"`()\[\]{}])@=/ contained conceal cchar=↦
+  syn match  holOperator /\v(^|\w|\s|[α-ω'"`()\[\]{}])@<=\+\+($|\w|\s|[α-ω'"`()\[\]{}])@=/ contained conceal cchar=⧺
+  syn match  holOperator /\v(^|\w|\s|[α-ω'"`()\[\]{}])@<=\:\:($|\w|\s|[α-ω'"`()\[\]{}])@=/ contained conceal cchar=∷
+  syn match  holOperator /\v(^|\w|\s|[α-ω'"`()\[\]{}])@<=\:\=($|\w|\s|[α-ω'"`()\[\]{}])@=/ contained conceal cchar=≔
   syn match  holDelim /{\s*}/ contained conceal cchar=∅
   syn region holType matchgroup=holQuote start="``:" matchgroup=holQuote end="``" concealends contains=smlComment,smlCommentErr,holSingleQuoteErr,holOperator
 
@@ -220,10 +220,10 @@ if exists("g:hol4_conceal_enabled")
     syn keyword holOperator RSUBSET contained conceal cchar=⊑
     syn keyword holOperator DIV contained conceal cchar=÷
     syn keyword holOperator O o contained conceal cchar=∘
-    syn match   holOperator #\\/# contained conceal cchar=∨
-    syn match   holOperator #/\\# contained conceal cchar=∧
-    syn match   holOperator /\(^\|\i\|[α-ω]\|\s\|['")\]}]\)\@<===>\($\|\i\|[α-ω]\|\s\|['"(\[{]\)\@=/ contained conceal cchar=⇒
-    syn match   holOperator /\(^\|\i\|[α-ω]\|\s\|['")\]}]\)\@<=<=>\($\|\i\|[α-ω]\|\s\|['"(\[{]\)\@=/ contained conceal cchar=⇔
+    syn match   holOperator /\v(^|\w|\s|[α-ω'"`()\[\]{}])@<=\\\/($|\w|\s|[α-ω'"`()\[\]{}])@=/ contained conceal cchar=∨
+    syn match   holOperator /\v(^|\w|\s|[α-ω'"`()\[\]{}])@<=\/\\($|\w|\s|[α-ω'"`()\[\]{}])@=/ contained conceal cchar=∧
+    syn match   holOperator /\v(^|\w|\s|[α-ω'"`()\[\]{}])@<=\=\=\>($|\w|\s|[α-ω'"`()\[\]{}])@=/ contained conceal cchar=⇒
+    syn match   holOperator /\v(^|\w|\s|[α-ω'"`()\[\]{}])@<=\<\=\>($|\w|\s|[α-ω'"`()\[\]{}])@=/ contained conceal cchar=⇔
   endif
 
   highlight! link Conceal Operator
