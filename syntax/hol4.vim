@@ -176,7 +176,7 @@ syn region   holEncl transparent matchgroup=holDelim start="<|" matchgroup=holDe
 syn match    holRecordField /\<\(\l\|_\)\(\w\|'\)*\>\(\s*:=\?\)\@=/ contained
 syn match    holCase /\v(\w|[α-ω'])+/ skipwhite contained
 
-syn region   holQuantifier matchgroup=holQuantifier start="[∀∃λ?!@\\]\|?!\|LEAST" matchgroup=holDelim end="\s*\." contained transparent contains=holQuantifierVar,holEncl,holDelimiter,holOperator,smlComment
+syn region   holQuantifier matchgroup=holQuantifier start="[∀∃λ?!@\\]\|?!\|[~¬][?∃]\|LEAST" matchgroup=holDelim end="\s*\." contained transparent contains=holQuantifierVar,holEncl,holDelimiter,holOperator,smlComment
 syn match    holQuantifierVar /\v(\w|[α-ω'])+/ skipwhite skipempty contained
 
 syn match    holOperator #\\/# contained
@@ -224,6 +224,8 @@ if exists("g:hol4_conceal_enabled")
     syn match   holOperator /\v(^|\w|\s|[α-ω'"`()\[\]{}])@<=\/\\($|\w|\s|[α-ω'"`()\[\]{}])@=/ contained conceal cchar=∧
     syn match   holOperator /\v(^|\w|\s|[α-ω'"`()\[\]{}])@<=\=\=\>($|\w|\s|[α-ω'"`()\[\]{}])@=/ contained conceal cchar=⇒
     syn match   holOperator /\v(^|\w|\s|[α-ω'"`()\[\]{}])@<=\<\=\>($|\w|\s|[α-ω'"`()\[\]{}])@=/ contained conceal cchar=⇔
+    syn match   holOperator /\v(^|\w|\s|[α-ω'"`()\[\]{}])@<=\~($|\w|\s|[α-ω'"`()\[\]{}])@=/ contained conceal cchar=¬
+    syn match   holOperator /\v(^|\w|\s|[α-ω'"`()\[\]{}])@<=\<\>($|\w|\s|[α-ω'"`()\[\]{}])@=/ contained conceal cchar=≠
   endif
 
   highlight! link Conceal Operator
